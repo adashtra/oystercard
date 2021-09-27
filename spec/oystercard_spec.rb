@@ -7,17 +7,24 @@ RSpec.describe Oystercard do
   end
 
   it "adds money to the card" do
-    card = Oystercard.new 
-    expect(card).to respond_to(:top_up).with(1).argument 
-  end 
-
-  it "can add money to the balance" do 
     card = Oystercard.new
-    expect{card.top_up 1}.to change{card.balance}.by 1
-  end 
+    expect(card).to respond_to(:top_up).with(1).argument
+  end
 
-  
+  it "can add money to the balance" do
+    card = Oystercard.new
+    expect { card.top_up 1 }.to change { card.balance }.by 1
+  end
+
+  it "raises an error if card limit is exceeded" do
+    card = Oystercard.new
+    card.top_up(5)
+    # expect { card.top_up Oystercard::MAXIMUM_LIMIT }.to change { card.balance }.by Oystercard::MAXIMUM_LIMIT
+    expect { card.top_up Oystercard::MAXIMUM_LIMIT }.to raise_error("Maximum limit of #{Oystercard::MAXIMUM_LIMIT} reached")
+  end
+
+  it "can deduct money to the balance" do
+    card = Oystercard.new
+    expect { card.deduct 1 }.to change { card.balance }.by -1
+  end
 end
-
-Write a test that checks the top_up method throws an exception 
-if the new balance would exceed the limit.

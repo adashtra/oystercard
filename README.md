@@ -28,6 +28,22 @@ I want a maximum limit (of £90) on my card
 Class | Methods
 ------------ | -------------
 Oystercard | maximum_limit 
+```
+In order to pay for my journey
+As a customer
+I need my fare deducted from my card
+```
+Class | Methods
+------------ | -------------
+Oystercard | deduct
+```
+In order to get through the barriers.
+As a customer
+I need to touch in and out.
+```
+Class | Methods
+------------ | -------------
+Oystercard | touch_in, touch_out, in_journey?
 
 ## Testing in IRB
 First intialise object for example oystercard_1 = Oystercard.new
