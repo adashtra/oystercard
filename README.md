@@ -9,8 +9,29 @@ I want money on my card
 ```
 Class | Methods
 ------------ | -------------
+Oystercard | balance 
+
+```
+In order to keep using public transport
+As a customer
+I want to add money to my card
+```
+Class | Methods
+------------ | -------------
 Oystercard | add_money
 
+```
+In order to protect my money from theft or loss
+As a customer
+I want a maximum limit (of £90) on my card
+```
+Class | Methods
+------------ | -------------
+Oystercard | maximum_limit 
+
+## Testing in IRB
+First intialise object for example oystercard_1 = Oystercard.new
+Second to check balance oystercard_1.check_balance
 
 ## 03 Learn debugging basics
 
