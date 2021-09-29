@@ -1,30 +1,62 @@
-require "oystercard.rb"
+require "oystercard"
 
 RSpec.describe Oystercard do
-  it "checks the balance on the card" do
-    card = Oystercard.new
-    expect(card.balance).to eq 0
-  end
+    describe '#initialize' do
+        it 'creates each oystercard instance with a default balance' do
+            expect(subject.balance).to eq 0
+        end
+    end
 
-  it "adds money to the card" do
-    card = Oystercard.new
-    expect(card).to respond_to(:top_up).with(1).argument
-  end
+    describe '#top_up' do
+        it 'allows oyster card to be topped up' do
+          subject.top_up(5)
+          expect(subject.balance).to eq 5
+        end
+        it "raises error if balance is higher than 90" do
+          maximum = Oystercard::MAX_LIMIT 
+          expect{ subject.top_up(91) }.to raise_error "Limit exceeded: £#{maximum}! Cannot top up"
+        end
+    end
 
-  it "can add money to the balance" do
-    card = Oystercard.new
-    expect { card.top_up 1 }.to change { card.balance }.by 1
-  end
+    describe '#deduct' do 
+        it 'deducts money from the oystercard' do 
+          subject.top_up(10)
+          subject.deduct(5)
+          expect(subject.balance).to eq 5
+        end
+    end 
 
-  it "raises an error if card limit is exceeded" do
-    card = Oystercard.new
-    card.top_up(5)
-    # expect { card.top_up Oystercard::MAXIMUM_LIMIT }.to change { card.balance }.by Oystercard::MAXIMUM_LIMIT
-    expect { card.top_up Oystercard::MAXIMUM_LIMIT }.to raise_error("Maximum limit of #{Oystercard::MAXIMUM_LIMIT} reached")
-  end
+    describe '#touch_in' do
+        it "can touch in" do
+            subject.top_up(1)
+            subject.touch_in
+            expect(subject).to be_in_journey
+        end
 
-  it "can deduct money to the balance" do
-    card = Oystercard.new
-    expect { card.deduct 1 }.to change { card.balance }.by -1
-  end
+        it "raises an error if oyster has insufficient funds" do
+          minimum = Oystercard::MIN_LIMIT
+          expect{ subject.touch_in }.to raise_error "Insufficient funds, you need at least £#{minimum} to touch in"
+        end
+    end
+
+    describe '#touch_out' do
+        it 'returns false if oyster is not in journey' do
+            subject.touch_out
+            expect(subject.in_journey?).to eq false
+        end 
+
+        it 'deducts the cost of the journey from the card when touching out' do
+          subject.top_up(5)
+          subject.touch_in
+          subject.touch_out
+          expect { subject.deduct }.to change{ subject.balance }.by(-2) 
+        end
+    end
+
+    describe '#in_journey?' do 
+        it 'oyster card is initially not in journey' do
+            oyster = Oystercard.new
+            expect(oyster.in_journey?).to eq false
+        end
+    end
 end
