@@ -4,6 +4,7 @@ class Oystercard
 
   MAX_LIMIT = 90
   MIN_LIMIT = 1
+  MIN_CHARGE = 2
 
   def initialize
     @balance = 0
@@ -21,6 +22,7 @@ class Oystercard
   end
 
   def touch_out
+    deduct(MIN_CHARGE)
     @in_use = false
   end
 
