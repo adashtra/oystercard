@@ -3,6 +3,7 @@ require "oystercard"
 RSpec.describe OysterCard do
 
   let(:station) { double(:station) }
+  let(:exit_station) {double :station}
 
     describe '#initialize' do
         it 'creates each oystercard instance with a default balance' do
@@ -43,29 +44,42 @@ RSpec.describe OysterCard do
         end
     end
 
-    describe '#touch_out' do
+    describe '#touch_out(exit_station)' do
+        before(:each) do
+          subject.top_up(5)
+          subject.touch_in(exit_station)
+        end
+
         it 'returns false if oyster is not in journey' do
-            subject.touch_out
+            subject.touch_out(exit_station)
             expect(subject.in_journey?).to eq false
         end 
 
         it 'deducts the cost of the journey from the card when touching out' do
-          subject.top_up(5)
-          subject.touch_in(station)
-          expect { subject.touch_out }.to change{ subject.balance }.by(-OysterCard::MIN_CHARGE) 
+          expect { subject.touch_out(exit_station) }.to change{ subject.balance }.by(-OysterCard::MIN_CHARGE) 
         end
 
         it "forgets the entry station on touch out" do
-          subject.top_up(5)
-          subject.touch_in(station)
-          subject.touch_out
+          subject.touch_out(exit_station)
           expect(subject.entry_station).to eq nil
+        end
+
+        it "stores exit station" do
+            subject.touch_out(exit_station)
+            expect(subject.exit_station).to eq exit_station
         end
     end
 
     describe '#in_journey?' do 
         it 'oyster card is initially not in journey' do
             expect(subject.in_journey?).to eq false
+        end
+         
+    end
+    
+    describe '#list_of_journeys' do
+        it "stores a list of previous journeys" do
+            expect(subject.list_of_journeys).to be_truthy
         end
     end
 end
