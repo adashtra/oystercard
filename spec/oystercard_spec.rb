@@ -3,7 +3,7 @@ require "oystercard"
 RSpec.describe OysterCard do
 
   let(:station) { double(:station) }
-  let(:exit_station) {double :station}
+  let(:exit_station) { double(:exit_station) }
 
     describe '#initialize' do
         it 'creates each oystercard instance with a default balance' do
@@ -42,6 +42,11 @@ RSpec.describe OysterCard do
           subject.touch_in(station.name)
           expect(subject.entry_station).to eq "Paddington"
         end
+
+        it "stores the entry_station in journey" do
+          subject.touch_in(station)
+          expect(subject.journey["entry_station"]).to eq station
+        end
     end
 
     describe '#touch_out(exit_station)' do
@@ -66,7 +71,7 @@ RSpec.describe OysterCard do
 
         it "stores exit station" do
             subject.touch_out(exit_station)
-            expect(subject.exit_station).to eq exit_station
+            expect(subject.journey["exit_station"]).to eq exit_station
         end
     end
 
@@ -80,6 +85,9 @@ RSpec.describe OysterCard do
     describe '#list_of_journeys' do
         it "stores a list of previous journeys" do
             expect(subject.list_of_journeys).to be_truthy
+        end
+        it "is empty by default" do
+        expect(subject.list_of_journeys).to be_empty
         end
     end
 end
