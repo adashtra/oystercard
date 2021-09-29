@@ -1,10 +1,10 @@
-class Oystercard 
+class OysterCard 
   attr_reader :balance
   attr_accessor :in_use
 
   MAX_LIMIT = 90
   MIN_LIMIT = 1
-  MIN_CHARGE = 2
+  MIN_CHARGE = 1
 
   def initialize
     @balance = 0
@@ -30,9 +30,9 @@ class Oystercard
     @in_use == true
   end
 
-  # private
+  private
 
-  def deduct(journey=2)
-    @balance -= journey
+  def deduct(amount)
+    @balance -= amount
   end
 end

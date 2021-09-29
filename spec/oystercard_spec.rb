@@ -1,6 +1,7 @@
 require "oystercard"
 
-RSpec.describe Oystercard do
+RSpec.describe OysterCard do
+
     describe '#initialize' do
         it 'creates each oystercard instance with a default balance' do
             expect(subject.balance).to eq 0
@@ -12,20 +13,13 @@ RSpec.describe Oystercard do
           subject.top_up(5)
           expect(subject.balance).to eq 5
         end
+
         it "raises error if balance is higher than 90" do
-          maximum = Oystercard::MAX_LIMIT 
+          maximum = OysterCard::MAX_LIMIT 
           expect{ subject.top_up(91) }.to raise_error "Limit exceeded: £#{maximum}! Cannot top up"
         end
     end
-
-    describe '#deduct' do 
-        it 'deducts money from the oystercard' do 
-          subject.top_up(10)
-          subject.deduct(5)
-          expect(subject.balance).to eq 5
-        end
-    end 
-
+  
     describe '#touch_in' do
         it "can touch in" do
             subject.top_up(1)
@@ -34,8 +28,7 @@ RSpec.describe Oystercard do
         end
 
         it "raises an error if oyster has insufficient funds" do
-          minimum = Oystercard::MIN_LIMIT
-          expect{ subject.touch_in }.to raise_error "Insufficient funds, you need at least £#{minimum} to touch in"
+          expect{ subject.touch_in }.to raise_error "Insufficient funds, you need at least £#{OysterCard::MIN_LIMIT} to touch in"
         end
     end
 
@@ -48,15 +41,13 @@ RSpec.describe Oystercard do
         it 'deducts the cost of the journey from the card when touching out' do
           subject.top_up(5)
           subject.touch_in
-          subject.touch_out
-          expect { subject.deduct }.to change{ subject.balance }.by(-2) 
+          expect { subject.touch_out }.to change{ subject.balance }.by(-OysterCard::MIN_CHARGE) 
         end
     end
 
     describe '#in_journey?' do 
         it 'oyster card is initially not in journey' do
-            oyster = Oystercard.new
-            expect(oyster.in_journey?).to eq false
+            expect(subject.in_journey?).to eq false
         end
     end
 end
