@@ -18,16 +18,16 @@ I want to add money to my card
 ```
 Class | Methods
 ------------ | -------------
-Oystercard | add_money
+Oystercard | top_up(amount)
 
 ```
 In order to protect my money from theft or loss
 As a customer
 I want a maximum limit (of £90) on my card
 ```
-Class | Methods
------------- | -------------
-Oystercard | maximum_limit 
+Class | Methods | Constants
+------------ | ------------- | -------------
+Oystercard | n/a | MAX_LIMIT
 ```
 In order to pay for my journey
 As a customer
@@ -35,24 +35,30 @@ I need my fare deducted from my card
 ```
 Class | Methods
 ------------ | -------------
-Oystercard | deduct
+Oystercard | deduct(amount)
 ```
 In order to get through the barriers.
 As a customer
 I need to touch in and out.
 ```
-Class | Methods
+Class | Methods | Variables
+------------ | ------------- | -------------
+Oystercard | touch_in, touch_out, in_journey? | in_use
+
+``` 
+In order to pay for my journey
+As a customer
+I need to have the minimum amount (£1) for a single journey.
+```
+Class | Methods | Constants
+------------ | ------------- | -------------
+Oystercard | n/a | MIN_LIMIT
+```
+In order to pay for my journey
+As a customer
+When my journey is complete, I need the correct amount deducted from my card
+```
+Class | Constants
 ------------ | -------------
-Oystercard | touch_in, touch_out, in_journey?
+Oystercard | MIN_CHARGE
 
-## Testing in IRB
-First intialise object for example oystercard_1 = Oystercard.new
-Second to check balance oystercard_1.check_balance
-
-## 03 Learn debugging basics
-
-1. Type of error: NameError:
-  uninitialized constant Oystercard
-2. File path where the error happened: # ./spec/oystercard_spec.rb:1:in `<top (required)>'
-3. Line number of error: rb:1
-4. Error: 'Raised when a given name is invalid or undefined.'
