@@ -9,17 +9,18 @@ RSpec.describe OysterCard do
         it 'creates each oystercard instance with a default balance' do
             expect(subject.balance).to eq 0
         end
+        it 'has empty list of journeys by default' do
+          expect(subject.list_of_journeys).to be_empty
+        end
     end
 
     describe '#top_up' do
         it 'allows oyster card to be topped up' do
-          subject.top_up(5)
-          expect(subject.balance).to eq 5
+          expect { subject.top_up(5) }.to change { subject.balance }.to 5
         end
 
         it "raises error if balance is higher than 90" do
-          maximum = OysterCard::MAX_LIMIT 
-          expect{ subject.top_up(91) }.to raise_error "Limit exceeded: £#{maximum}! Cannot top up"
+          expect{ subject.top_up(91) }.to raise_error "Limit exceeded: £#{OysterCard::MAX_LIMIT}! Cannot top up"
         end
     end
   
@@ -28,8 +29,7 @@ RSpec.describe OysterCard do
         subject.top_up(5)
       end
         it "can touch in" do
-            subject.touch_in(station)
-            expect(subject.in_journey?).to be_truthy
+          expect { subject.touch_in(station) }.to change { subject.in_journey?}.to true
         end
 
         it "raises an error if oyster has insufficient funds" do
@@ -38,14 +38,11 @@ RSpec.describe OysterCard do
         end
 
         it "remembers the station you started journey from" do
-          allow(station).to receive(:name).and_return("Paddington")
-          subject.touch_in(station.name)
-          expect(subject.entry_station).to eq "Paddington"
+          expect { subject.touch_in("Paddington") }.to change { subject.entry_station }.to "Paddington"
         end
 
         it "stores the entry_station in journey" do
-          subject.touch_in(station)
-          expect(subject.journey["entry_station"]).to eq station
+          expect { subject.touch_in(station) }.to change { subject.journey["entry_station"] }.to station
         end
     end
 
@@ -56,8 +53,7 @@ RSpec.describe OysterCard do
         end
 
         it 'returns false if oyster is not in journey' do
-            subject.touch_out(exit_station)
-            expect(subject.in_journey?).to eq false
+          expect { subject.touch_out(exit_station) }.to change { subject.in_journey? }.to false
         end 
 
         it 'deducts the cost of the journey from the card when touching out' do
@@ -65,13 +61,11 @@ RSpec.describe OysterCard do
         end
 
         it "forgets the entry station on touch out" do
-          subject.touch_out(exit_station)
-          expect(subject.entry_station).to eq nil
+          expect { subject.touch_out(exit_station) }.to change { subject.entry_station }.to nil
         end
 
         it "stores exit station" do
-            subject.touch_out(exit_station)
-            expect(subject.journey["exit_station"]).to eq exit_station
+          expect { subject.touch_out(exit_station) }.to change { subject.journey["exit_station"] }.to exit_station
         end
     end
 
@@ -86,8 +80,18 @@ RSpec.describe OysterCard do
         it "stores a list of previous journeys" do
             expect(subject.list_of_journeys).to be_truthy
         end
+
         it "is empty by default" do
         expect(subject.list_of_journeys).to be_empty
         end
+    end
+
+    describe "#journey" do
+      it "checks that touching in and out creates one journey" do
+        subject.top_up(5)
+        subject.touch_in(station)
+        subject.touch_out(exit_station)
+        expect(subject.journey).to eq ( {"entry_station"=>station, "exit_station"=>exit_station} )
+      end
     end
 end
