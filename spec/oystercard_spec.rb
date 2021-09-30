@@ -7,7 +7,7 @@ RSpec.describe OysterCard do
 
     describe '#initialize' do
         it 'creates each oystercard instance with a default balance' do
-            expect(subject.balance).to eq 0
+          expect(subject.balance).to eq 0
         end
         it 'has empty list of journeys by default' do
           expect(subject.list_of_journeys).to be_empty
