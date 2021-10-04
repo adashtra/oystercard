@@ -11,6 +11,7 @@ RSpec.describe OysterCard do
         end
         it 'has empty list of journeys by default' do
           expect(subject.list_of_journeys).to be_empty
+          p subject.view_menu
         end
     end
 
